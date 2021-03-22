@@ -8,7 +8,7 @@ const clientInfo = [
   },
   {
     id: 2,
-    clientN: "Shiakh",
+    clientN: "Shaikh",
     age: 25,
     weight: 77,
     height: 167,
