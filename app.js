@@ -1,7 +1,6 @@
 //import
 const express = require("express");
 const cors = require("cors");
-const slugify = require("slugify");
 
 const app = express();
 
