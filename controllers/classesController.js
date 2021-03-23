@@ -1,18 +1,26 @@
 let classReq = require("../class");
-const slugify = require("slugify");
+const { Clasy } = require("../db/models");
 
 // create
-exports.classesCreate = (req, res) => {
-  const id = classReq[classReq.length - 1].id + 1;
-  const slug = slugify(req.body.className, { lower: true });
-  const newClass = { id, slug, ...req.body };
-  classReq.push(newClass);
-  res.status(201).json(newClass);
+exports.classesCreate = async (req, res) => {
+  try {
+    const newClass = await Clasy.create(req.body);
+    res.status(201).json(newClass);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 // list
-exports.classesList = (req, res) => {
-  res.json(classReq);
+exports.classesList = async (req, res) => {
+  try {
+    const classy = await Class.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    });
+    res.json(classy);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 // update

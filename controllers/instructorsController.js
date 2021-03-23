@@ -1,18 +1,26 @@
 let instructorReq = require("../instructor");
-const slugify = require("slugify");
+const { Inst } = require("../db/models");
 
 // create
-exports.instructorsCreate = (req, res) => {
-  const id = instructorReq[instructorReq.length - 1].id + 1;
-  const slug = slugify(req.body.instructor, { lower: true });
-  const newInstructor = { id, slug, ...req.body };
-  instructorReq.push(newInstructor);
-  res.status(201).json(newInstructor);
+exports.instructorsCreate = async (req, res) => {
+  try {
+    const newInst = await Inst.create(req.body);
+    res.status(201).json(newInst);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 // list
-exports.instructorsList = (req, res) => {
-  res.json(instructorReq);
+exports.instructorsList = async (req, res) => {
+  try {
+    const instructors = await Inst.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    });
+    res.json(instructors);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 // update

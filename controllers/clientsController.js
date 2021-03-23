@@ -1,20 +1,27 @@
 let clientReq = require("../client");
-const slugify = require("slugify");
+const { Client } = require("../db/models");
 
 // create
-exports.clientsCreate = (req, res) => {
-  const id = clientReq[clientReq.length - 1].id + 1;
-  const slug = slugify(req.body.clientN, { lower: true });
-  const newClient = { id, slug, ...req.body };
-  clientReq.push(newClient);
-  res.status(201).json(newClient);
+exports.clientsCreate = async (req, res) => {
+  try {
+    const newClient = await Client.create(req.body);
+    res.status(201).json(newClient);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 // list
-exports.clientsList = (req, res) => {
-  res.json(clientReq);
+exports.clientsList = async (req, res) => {
+  try {
+    const clients = await Client.findAll({
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+    });
+    res.json(clients);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
-
 // update
 exports.clientsUpdate = (req, res) => {
   const { clientId } = req.params;
