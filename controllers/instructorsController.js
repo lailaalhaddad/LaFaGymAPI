@@ -24,31 +24,35 @@ exports.instructorsList = async (req, res) => {
 };
 
 // update
-exports.instructorsUpdate = (req, res) => {
+exports.instructorsUpdate = async (req, res) => {
   const { instructorId } = req.params;
-  const foundInst = instructorReq.find(
-    (instructor) => instructor.id === +instructorId
-  );
-  if (foundInst) {
-    for (const id in req.body) foundInst[id] = req.body[id];
-    res.status(204).end();
-  } else {
-    res.status(404).json({ message: "Instructor not found" });
+  try {
+    const foundInst = await Inst.findByPk(instructorId);
+    if (foundInst) {
+      await foundInst.update(req.body);
+      res.status(204).end();
+    } else {
+      res.status(404).json({ message: "Cookie not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
 // delete
-exports.instructorsDelete = (req, res) => {
+exports.instructorsDelete = async (req, res) => {
   const { instructorId } = req.params;
-  const foundInst = instructorReq.find(
-    (instructor) => instructor.id === +instructorId
-  );
-  if (foundInst) {
-    instructorReq = instructorReq.filter(
-      (instructor) => instructor !== foundInst
-    );
-    res.status(204).end();
-  } else {
-    res.status(404).json({ message: "instructor with this ID doesn't exist." });
+  try {
+    const foundInst = await Inst.findByPk(instructorId);
+    if (foundInst) {
+      await foundInst.destroy();
+      res.status(204).end();
+    } else {
+      res
+        .status(404)
+        .json({ message: "instructor with this ID doesn't exist." });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

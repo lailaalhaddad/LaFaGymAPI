@@ -23,25 +23,33 @@ exports.clientsList = async (req, res) => {
   }
 };
 // update
-exports.clientsUpdate = (req, res) => {
+exports.clientsUpdate = async (req, res) => {
   const { clientId } = req.params;
-  const foundclient = clientReq.find((client) => client.id === +clientId);
-  if (foundclient) {
-    for (const id in req.body) foundclient[id] = req.body[id];
-    res.status(204).end();
-  } else {
-    res.status(404).json({ message: "Client not found" });
+  try {
+    const foundclient = await Client.findByPk(clientId);
+    if (foundclient) {
+      await foundclient.update(req.body);
+      res.status(204).end();
+    } else {
+      res.status(404).json({ message: "Client not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
 // delete
-exports.clientsDelete = (req, res) => {
+exports.clientsDelete = async (req, res) => {
   const { clientId } = req.params;
-  const foundclient = clientReq.find((client) => client.id === +clientId);
-  if (foundclient) {
-    clientReq = clientReq.filter((client) => client !== foundclient);
-    res.status(204).end();
-  } else {
-    res.status(404).json({ message: "client with this ID doesn't exist." });
+  try {
+    const foundclient = await Client.findByPk(clientId);
+    if (foundclient) {
+      await foundclient.destroy();
+      res.status(204).end();
+    } else {
+      res.status(404).json({ message: "client with this ID doesn't exist." });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

@@ -1,13 +1,13 @@
-const SequelizeSlugify = require("sequelize-slugify");
+// const SequelizeSlugify = require("sequelize-slugify");
 module.exports = (sequelize, DataTypes) => {
   const Inst = sequelize.define("Inst", {
     instructor: {
       type: DataTypes.STRING,
     },
-    slug: {
-      type: DataTypes.STRING,
-      unique: true,
-    },
+    // slug: {
+    //   type: DataTypes.STRING,
+    //   unique: true,
+    // },
     classType: {
       type: DataTypes.STRING,
     },
@@ -15,8 +15,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
     },
   });
-  SequelizeSlugify.slugifyModel(Inst, {
-    source: ["instructor"],
-  });
+  // SequelizeSlugify.slugifyModel(Inst, {
+  //   source: ["instructor"],
+  // });
   return Inst;
 };
